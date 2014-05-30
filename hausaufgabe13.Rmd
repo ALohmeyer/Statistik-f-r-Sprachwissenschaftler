@@ -241,6 +241,5 @@ print(xtable(priming.f1.deutsch.target$ANOVA
              , digits=c(0,0,0,0,2,2,2,2,0,2))
       ,type="html",include.rownames=FALSE)
 
-
 # Lizenz
 Dieses Werk ist lizenziert unter einer CC-BY-NC-SA Lizenz.
