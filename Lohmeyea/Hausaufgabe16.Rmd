@@ -1,6 +1,6 @@
 % Hausaufgabe 16
-% Phillip Alday <phillip.alday@staff.uni-marburg.de>
-% 2014-06-11
+% Antonia Lohmeyer <Lohmeyea@students.uni-marburg.de>
+% 2014-06-15
 
 Falls die Umlaute in dieser und anderen Dateien nicht korrekt dargestellt werden, sollten Sie File > Reopen with Encoding > UTF-8 sofort machen (und auf jeden Fall ohne davor zu speichern), damit die Enkodierung korrekt erkannt wird! 
 
@@ -60,6 +60,63 @@ ggplot(diamonds,aes(x=carat,y=price,color=color)) + geom_point() + facet_wrap(~c
 
 # Noch eine Überlegung
 Haben Sie dabei explorativ oder konfirmativ gearbeitet? Was hat das für eine Auswirkung auf die Interpretation der Ergebnisse?
+
+#Analyse
+
+Fragestellung: Was bestimmt den Preis eines Diamanten?
+
+#Plotten
+Hypothese: je mehr Karat ein Diamant besitzt, desto teurer ist er. Auch  Farbe, Schliff und Reinheit können den Preis beeinflussen.
+
+```{r}
+ggplot(diamonds,aes(x=carat,y=price)) + geom_point()
+ggplot(diamonds,aes(x=carat,y=price,color=color)) + geom_point(alpha=0.5)
+ggplot(diamonds,aes(x=carat,y=price,color=cut)) + geom_point(alpha=0.5)
+ggplot(diamonds,aes(x=carat,y=price,color=clarity)) + geom_point(alpha=0.5)
+```
+
+#Lineare Regression
+Beziehung zwischen Karat und Preis
+
+```{r}
+ggplot(diamonds,aes(x=carat,y=price)) + geom_point() + geom_smooth(method="lm")
+
+```
+#Logarithmische Skalen
+
+```{r}
+ggplot(diamonds,aes(x=carat,y=price)) + geom_point() + geom_smooth(method="lm") + scale_x_log10() + scale_y_log10()
+
+```
+#Statistisches Testen
+```{r}
+summary(lm(price ~ carat, diamonds))
+
+```
+Die Abhängigkeit von Preis und Karat ist signifikant.
+R^2 von 84.93% für die Formel "price = -2256.4 + carat * 7756.4"
+
+Ein Teil der Varianz bleibt offen. Der Preis hängt also nicht nur vom Karat ab.
+
+```{r}
+summary(lm(log10(price) ~ log10(carat), diamonds))
+
+```
+Die Angaben zu Farbe, Schliff und Reinheit der Diamanten nicht numerisch skaliert sind. Somit kommt man mit der linearen Regression nicht weiter. Man kann allerdings sagen, dass der Karatwert eines Diamanten selbst, der aus dessen Gewicht hervorgeht, stark vom Volumen abhängt:
+
+```{r}
+summary(lm(carat ~ x + y + z, diamonds))
+
+```
+Gibt es einen preislichen Unterschied zischen den unerschiedlichen Farben, Schliffen und Reinheitsgraden?
+
+#Anova
+```{r}
+summary(aov(price ~ color*cut*clarity, data=diamonds))
+
+```
+Die Haupteffekte und die Interaktionen sind signifikant. Somit wirken sich alle der drei Eigenschaften auf den Preis des Diamanten aus.
+
 
 # Lizenz
 Dieses Werk ist lizenziert unter einer CC-BY-NC-SA Lizenz.
